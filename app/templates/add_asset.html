@@ -30,9 +30,7 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">See Website</a></li>
-                        <li><a href="#">Open Ticket</a></li>
-                        <li><a href="#">Report Bug</a></li>
+                        <li><a href="login">Log Out</a></li>
                     </ul>
                 </div>
 
@@ -48,43 +46,67 @@
                     </li>
 
 
-                    <li>
-                        <a href="#"><i class="fa fa-desktop "></i>Dashboard</a>
+                               <li>
+                        <a href="index"><i class="fa fa-desktop "></i>Dashboard</a>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-edit "></i>Assets<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#"><i class="fa fa-edit "></i>Add Asset</a>
+                            
+		{% if user<=2 %}
+							<li>
+                                <a href="add_asset"><i class="fa fa-edit "></i>Add Asset</a>
+                            </li>
+							<li>
+                                <a href="issue_asset"><i class="fa fa-edit "></i>Issue Assest</a>
+                            </li>
+							
+							<li>
+                                <a href="view_assets"><i class="fa fa-table "></i>View Inventory</a>
+                            </li>
+							{%endif%}
+							
+							<li>
+                                <a href="available_assets"><i class="fa fa-edit "></i>Available Assets</a>
                             </li>
                             <li>
-                                <a href="#"><i class="fa fa-edit "></i>Issue Assest</a>
+                                <a href="request_asset"><i class="fa fa-edit "></i>Request for Assets</a>
                             </li>
-                            <li>
-                                <a href="#"><i class="fa fa-table "></i>View Inventory</a>
-                            </li>
+							
                         </ul>
                     </li>
+					
+		{% if user<=2 %}
+			 
+			
 					<li>
                         <a href="#"><i class="fa fa-edit "></i>Manage Staff<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
-                                <a href="#"><i class="fa fa-edit "></i>Add Staff</a>
+                                <a href="add_staff"><i class="fa fa-edit "></i>Add Staff</a>
                             </li>
                             <li>
-                                <a href="#"><i class="fa fa-edit "></i>Staff List</a>
+                                <a href="view_staff"><i class="fa fa-edit "></i>Staff List</a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+					
+					<li>
+                        <a href="#"><i class="fa fa-table "></i>Manage Transactions<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                             <li>
+                                <a href="reclaimed"><i class="fa fa-edit "></i>Reclaim Transactions</a>
                             </li>
                             <li>
-                                <a href="#"><i class="fa fa-table "></i>Staff Inventory Transactions</a>
+                                <a href="issued"><i class="fa fa-edit "></i>Issue Out Transactions</a>
+                            </li>
+                            <li>
+                                <a href="view_transactions"><i class="fa fa-table "></i>Staff Inventory Transactions</a>
                             </li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="#"><i class="fa fa-table "></i></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-edit "></i>Forms </a>
-                    </li>
+                    {%endif%}
 
                 </ul>
 
@@ -96,31 +118,31 @@
                 <div class="row">
                     <div class="col-md-12">
                      <h2>Add Assets</h2>   
-                    </div>
-					<form action="" method="POST" class="form-group">
-					<table width="500px" class="table">
-					<tr align="center">
-					<td align="Center" width="20%">Asset name:</td> <td align="Left" width="20%"><input class="form-control" type="text" name="name"></td>
-					</tr>
-					<tr>
-					<td align="Center" width="20%" >Serial number:</td><td align="Left" width="20%"><input class="form-control" type="text" name="serial"></td>
-					</tr>
-					<tr>
-					<td align="Center" width="20%" >Andela Serial number:</td><td align="Left" width="20%"><input class="form-control" type="text" name="a_serial"></td>
-					</tr>
-					<tr>
-					<td align="Center" width="20%" >Description:</td><td align="Left" width="20%"><input class="form-control" type="text" name="serial"></td>
-					</tr>
+                   </div>
+                </div>
+                <!-- /. ROW  -->
+                <hr />
+                <div class="row">
+                    <div class="col-md-6 col-sm-3 col-xs-6">
+					<form action="{{ url_for('add_asset') }}" method="POST" class="form-group">
 					
-					<tr><td><input type="submit"  value="Send form data!"></td></tr>
+					
+					Asset name:<input class="form-control" type="text" name="name">
+					Serial number:<input class="form-control" type="text" name="serial">
+					Andela Serial number:<input class="form-control" type="text" name="a_serial">
+					Description:<input class="form-control" type="text" name="description">
+					Date Bought:{{form.da(class='datepicker form-control')}}
+					<div>
+					<br>
+					<input class="btn btn-primary" type="submit"  value="Submit" name="add">
+					</div>
 					</table>
-					</form>
-					
-					
-                </div>              
+					</form>				
                  <!-- /. ROW  -->
                   <hr />
-              
+				  
+              </div>
+			  </div>
                  <!-- /. ROW  -->           
     </div>
              <!-- /. PAGE INNER  -->

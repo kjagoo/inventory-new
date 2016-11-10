@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InVentory Management</title>
+    <!-- BOOTSTRAP STYLES-->
+    <link href="{{ url_for('static', filename='css/bootstrap.css')}}" rel="stylesheet" />
+    <!-- FONTAWESOME STYLES-->
+    <link href="{{ url_for('static', filename='css/font-awesome.css')}}" rel="stylesheet" />
+    <!-- CUSTOM STYLES-->
+    <link href="{{ url_for('static', filename='css/custom.css')}}" rel="stylesheet" />
+    <!-- GOOGLE FONTS-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+</head>
+<body>
+     
+           
+          
+    <div id="wrapper">
+         <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="adjust-nav">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#"><i class="fa fa-square-o "></i>&nbsp;Andela Inventory Management</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="login">Log Out</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <!-- /. NAV TOP  -->
+        <nav class="navbar-default navbar-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="main-menu">
+                    <li class="text-center user-image-back">
+                        <img src="{{ url_for('static', filename='img/find_user.png')}}" class="img-responsive" />
+                     
+                    </li>
+
+
+                            <li>
+                        <a href="index"><i class="fa fa-desktop "></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-edit "></i>Assets<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            
+		{% if user<=2 %}
+							<li>
+                                <a href="add_asset"><i class="fa fa-edit "></i>Add Asset</a>
+                            </li>
+							<li>
+                                <a href="issue_asset"><i class="fa fa-edit "></i>Issue Assest</a>
+                            </li>
+							
+							<li>
+                                <a href="view_assets"><i class="fa fa-table "></i>View Inventory</a>
+                            </li>
+							{%endif%}
+							
+							<li>
+                                <a href="available_assets"><i class="fa fa-edit "></i>Available Assets</a>
+                            </li>
+                            <li>
+                                <a href="request_asset"><i class="fa fa-edit "></i>Request for Assets</a>
+                            </li>
+							
+                        </ul>
+                    </li>
+					
+		{% if user<=2 %}
+			 
+			
+					<li>
+                        <a href="#"><i class="fa fa-edit "></i>Manage Staff<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="add_staff"><i class="fa fa-edit "></i>Add Staff</a>
+                            </li>
+                            <li>
+                                <a href="view_staff"><i class="fa fa-edit "></i>Staff List</a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+					
+					<li>
+                        <a href="#"><i class="fa fa-table "></i>Manage Transactions<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                             <li>
+                                <a href="reclaimed"><i class="fa fa-edit "></i>Reclaim Transactions</a>
+                            </li>
+                            <li>
+                                <a href="issued"><i class="fa fa-edit "></i>Issue Out Transactions</a>
+                            </li>
+                            <li>
+                                <a href="view_transactions"><i class="fa fa-table "></i>Staff Inventory Transactions</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {%endif%}
+
+                </ul>
+
+            </div>
+
+        </nav>        <!-- /. NAV SIDE  -->
+        <div id="page-wrapper" >
+            <div id="page-inner">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>Reclaimed Assets List</h2>
+                    </div>
+                </div>
+                <!-- /. ROW  -->
+                <hr />
+                <div class="row">
+                    <div class="col-md-12 col-sm-3 col-xs-6">
+                        
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    
+                                    <th>Borrower</th>
+                                    <th>Asset</th>
+                                    <th>Issuer</th>
+									<th>Date Issued</th>
+									<th>Date Returned</th>
+									<th>Status</th>
+									<th>Comment</th>
+									{% if user<=2 %}
+									<th>Reclaim</th>{%endif%}
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for assets in all_records %}
+    <tr>
+    
+        <td>{% for sta in all_staff %}
+		{% if sta.staff_id|string() == assets.staff_id|string() %}
+			{{sta.f_name}} {{sta.s_name}}   
+			{%endif%}{% endfor %}</td>
+		<td>{% for ass in all_assets %}
+		{% if ass.assest_id|string() == assets.asset_id|string() %}
+			{{ass.name}}  
+			{%endif%}{% endfor %}</td>
+		<td>{{assets.admin_id }}</td>
+		<td>{{assets.date_borrowed}}</td>
+		<td>{{assets.date_returned}}</td>
+		<td>{% if assets.date_returned  < today  %}
+		Passed Due {% elif assets.date_returned==today %}
+		Due Today  {% else %} Good {% endif%}
+		</td>
+		<td>{{assets.comment}}</td>
+		
+			{% if user<=2 %}
+				<td>{% if assets.status == 'Issued Out' %}
+				 
+				 <form action="/issue_asset/{{assets.transaction_id}}" method="POST">
+					<input class="btn btn-primary" type="submit"  value="Reclaim" name="add">
+				 </form>
+				 
+				{%endif%}</td>
+			{% endif %}
+		
+    
+    </tr>
+{% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>              
+                 <!-- /. ROW  -->
+                  <hr />
+              
+                 <!-- /. ROW  -->           
+    </div>
+             <!-- /. PAGE INNER  -->
+            </div>
+         <!-- /. PAGE WRAPPER  -->
+        </div>
+     <!-- /. WRAPPER  -->
+    <!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
+    <!-- JQUERY SCRIPTS -->
+  <script src="{{ url_for('static', filename='js/jquery-1.10.2.js')}}"></script>
+      <!-- BOOTSTRAP SCRIPTS -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <!-- METISMENU SCRIPTS -->
+    <script src="{{ url_for('static', filename='js/jquery.metisMenu.js')}}"></script>
+      <!-- CUSTOM SCRIPTS -->
+    <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+	<!--table row counter-->
+	<script src="{{ url_for('static', filename='js/count_table.js')}}"></script>
+    
+   
+</body>
+</html>

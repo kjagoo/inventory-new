@@ -24,6 +24,16 @@
 				</div>
  
                 <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block" >
+				<br>
+				<div class="control-group" color="#ADFF2F">
+				<label color="#ADFF2F" for="login-pass">
+				{%if error != None %}
+				{{error}}
+				{% endif %}
+				
+				
+				</label>
+				</div>
 			    <br>
 			</div>
 		</div>

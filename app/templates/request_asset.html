@@ -46,7 +46,7 @@
                     </li>
 
 
-                               <li>
+                                <li>
                         <a href="index"><i class="fa fa-desktop "></i>Dashboard</a>
                     </li>
                     <li>
@@ -98,6 +98,7 @@
                              <li>
                                 <a href="request_transactions"><i class="fa fa-edit "></i>Requests Transactions</a>
                             </li>
+							 
 							 <li>
                                 <a href="reclaimed"><i class="fa fa-edit "></i>Reclaim Transactions</a>
                             </li>
@@ -115,31 +116,47 @@
 
             </div>
 
-        </nav>        <!-- /. NAV SIDE  -->
+        </nav>       <!-- /. NAV SIDE  -->
         <div id="page-wrapper" >
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
-                     <h2>Add Assets</h2>   
+                     <h2>Issue Assets</h2>   
                    </div>
                 </div>
+				 {% with messages = get_flashed_messages() %}
+         {% if messages %}
+            <ul>
+               {% for message in messages %}
+               <li<{{ message }}</li>
+               {% endfor %}
+            </ul>
+         {% endif %}
+      {% endwith %}
                 <!-- /. ROW  -->
                 <hr />
                 <div class="row">
                     <div class="col-md-6 col-sm-3 col-xs-6">
-					<form action="{{ url_for('add_asset') }}" method="POST" class="form-group">
+					<form action="{{ url_for('request_asset') }}" method="POST" class="form-group">
 					
 					
-					Asset name:<input class="form-control" type="text" name="name">
-					Serial number:<input class="form-control" type="text" name="serial">
-					Andela Serial number:<input class="form-control" type="text" name="a_serial">
-					Description:<input class="form-control" type="text" name="description">
-					Date Bought:{{form.da(class='datepicker form-control')}}
+					Item id:
+					<select name="asset_id" class="form-control">
+					  {% for assets in all_assets %}
+					  <option value="{{assets.asset_id}}">{{assets.name}} {{assets.andela_serial}}</option>
+					  {% endfor%}
+					</select>
+					
+					<!--Amin id:<input class="form-control" type="text" name="admin_id">-->
+					Date Issued:{{form.dt(class='datepicker form-control')}}
+					Date Return:{{form.da(class='datepicker form-control')}}
+					<!--status:<input class="form-control" type="text" name="status">-->
+					Comment:<input class="form-control" type="text" name="comment">
 					<div>
 					<br>
 					<input class="btn btn-primary" type="submit"  value="Submit" name="add">
 					</div>
-					</table>
+					
 					</form>				
                  <!-- /. ROW  -->
                   <hr />

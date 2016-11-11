@@ -46,7 +46,7 @@
                     </li>
 
 
-                               <li>
+                     <li>
                         <a href="index"><i class="fa fa-desktop "></i>Dashboard</a>
                     </li>
                     <li>
@@ -95,10 +95,10 @@
 					<li>
                         <a href="#"><i class="fa fa-table "></i>Manage Transactions<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                             <li>
+							<li>
                                 <a href="request_transactions"><i class="fa fa-edit "></i>Requests Transactions</a>
-                            </li>
-							 <li>
+                            </li>                            
+							<li>
                                 <a href="reclaimed"><i class="fa fa-edit "></i>Reclaim Transactions</a>
                             </li>
                             <li>
@@ -120,32 +120,72 @@
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
-                     <h2>Add Assets</h2>   
-                   </div>
+                        <h2>Requests List</h2>
+                    </div>
                 </div>
                 <!-- /. ROW  -->
                 <hr />
                 <div class="row">
-                    <div class="col-md-6 col-sm-3 col-xs-6">
-					<form action="{{ url_for('add_asset') }}" method="POST" class="form-group">
-					
-					
-					Asset name:<input class="form-control" type="text" name="name">
-					Serial number:<input class="form-control" type="text" name="serial">
-					Andela Serial number:<input class="form-control" type="text" name="a_serial">
-					Description:<input class="form-control" type="text" name="description">
-					Date Bought:{{form.da(class='datepicker form-control')}}
-					<div>
-					<br>
-					<input class="btn btn-primary" type="submit"  value="Submit" name="add">
-					</div>
-					</table>
-					</form>				
+                    <div class="col-md-12 col-sm-3 col-xs-6">
+                        
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    
+                                    <th>Borrower</th>
+                                    <th>Asset</th>
+                                    <th>Issuer</th>
+									<th>Date Issued</th>
+									<th>Date Returned</th>
+									<th>Status</th>
+									<th>Comment</th>
+									{% if user<=2 %}
+									<th>Reclaim</th>{%endif%}
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for assets in all_records %}
+    <tr>
+    
+        
+		<td>{% for sta in all_staff %}
+		{% if sta.staff_id|string() == assets.staff_id|string() %}
+			{{sta.f_name}} {{sta.s_name}}   
+			{%endif%}{% endfor %}</td>
+		<td>{% for ass in all_assets %}
+		{% if ass.assest_id|string() == assets.asset_id|string() %}
+			{{ass.name}}  
+			{%endif%}{% endfor %}</td>
+		<td>{{assets.admin_id }}</td>
+		<td>{{assets.date_borrowed}}</td>
+		<td>{{assets.date_returned}}</td>
+		<td>{% if  assets.date_returned|int()  < today|int() %}
+		Passed Due {% elif assets.date_returned|int() ==today|int() %}
+		Due Today  {% else %} Good {% endif%}
+		</td>
+		<td>{{assets.comment}}</td>
+		
+			{% if user<=2 %}
+				<td>{% if assets.status == 'Issued Out' %}
+				 
+				 <form action="/issue_asset/{{assets.transaction_id}}" method="POST">
+					<input class="btn btn-primary" type="submit"  value="Reclaim" name="add">
+				 </form>
+				 
+				{%endif%}</td>
+			{% endif %}
+		
+    
+    </tr>
+{% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>              
                  <!-- /. ROW  -->
                   <hr />
-				  
-              </div>
-			  </div>
+              
                  <!-- /. ROW  -->           
     </div>
              <!-- /. PAGE INNER  -->
@@ -162,6 +202,8 @@
     <script src="{{ url_for('static', filename='js/jquery.metisMenu.js')}}"></script>
       <!-- CUSTOM SCRIPTS -->
     <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+	<!--table row counter-->
+	<script src="{{ url_for('static', filename='js/count_table.js')}}"></script>
     
    
 </body>

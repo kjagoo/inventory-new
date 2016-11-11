@@ -76,7 +76,7 @@
                         </ul>
                     </li>
 					
-		{% if user<=2 %}
+		{% if user==2 %}
 			 
 			
 					<li>
@@ -90,12 +90,15 @@
                             </li>
                             
                         </ul>
-                    </li>
-					
+                    </li>{%endif%}
+					{% if user<=2 %}
 					<li>
                         <a href="#"><i class="fa fa-table "></i>Manage Transactions<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                              <li>
+                                <a href="request_transactions"><i class="fa fa-edit "></i>Requests Transactions</a>
+                            </li>
+							 <li>
                                 <a href="reclaimed"><i class="fa fa-edit "></i>Reclaim Transactions</a>
                             </li>
                             <li>

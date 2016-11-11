@@ -27,7 +27,7 @@ class UserRights(Base):
                 
 
         def __repr__(self):
-                return "<MyTable(%s, )>" % (self.name)
+                return "<MyTable(%s )>" % (self.name)
 
 
 
@@ -51,7 +51,7 @@ class Add_asset(Base):
                 
 
         def __repr__(self):
-                return "<MyTable(%s, %s,%s,%s,%s)>" % (self.name, self.serial, self.andela_serial, self.date_bought, self.description)
+                return "<MyTable(%s,%s,%s,%s,%s)>" % (self.name, self.serial, self.andela_serial, self.date_bought, self.description)
 
 
  
@@ -66,9 +66,10 @@ class Add_staff(Base):
     email = Column(String(100))
     right_id =Column(String(100))
     department_id =Column(String(100))
+    password=Column(String(100))
     
 
-    def __init__(self, f_name, s_name,username,right_id,email):
+    def __init__(self, f_name, s_name,username,right_id, email,department_id,password):
            
             self.f_name = f_name
             self.s_name = s_name
@@ -81,7 +82,7 @@ class Add_staff(Base):
                         
 
     def __repr__(self):
-            return "<MyTable(%s, %s,%s,%s,%s)>" % (self.f_name, self.s_name, self.username, self.right_id, self.email)
+            return "<MyTable(%s,%s,%s,%s,%s)>" % (self.f_name, self.s_name, self.username, self.right_id, self.email,self.department_id,self.password)
 
 class Issue_asset(Base):
     __tablename__ = 'tbl_assets_transactions'
@@ -108,7 +109,24 @@ class Issue_asset(Base):
             
 
     def __repr__(self):
-            return "<MyTable(%s, %s,%s,%s,%s,%s,%s)>" % (self.staff_id,self.asset_id,  self.username, self.admin_id, self.date_borrowed, self.date_returned, self.status, self.comment)
+            return "<MyTable( %s,%s,%s,%s,%s,%s,%s)>" % (self.staff_id,self.asset_id,  self.username, self.admin_id, self.date_borrowed, self.date_returned, self.status, self.comment)
 
 
+class Department(Base):
+    __tablename__ = 'tbl_department'
+
+    department_id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    
+    
+    def __init__(self, department_id,name):
+            
+           
+            self.department_id = department_id
+            self.name = name
+           
+            
+
+    def __repr__(self):
+            return "<MyTable(%s,%s)>" % (self.department_id,self.name)
 

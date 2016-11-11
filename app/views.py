@@ -3,7 +3,7 @@ from flask import url_for
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from flask import Flask,jsonify,abort, make_response
 from sqlalchemy import *
-from db import Add_asset, Add_staff, Issue_asset,UserRights
+from db import Add_asset, Add_staff, Issue_asset,UserRights, Department
 from db import session as sess
 from flask_wtf import Form
 from wtforms.fields.html5 import DateField
@@ -29,16 +29,19 @@ def login():
         password_form  = request.form['password']
 
         all_records = sess.query(Add_staff).filter_by(username=username_form).first()
-        return all_records.department_id
+        
         if all_records.department_id==1 and all_records.right_id==2:
             all_records.right_id=2
         elif  all_records.department_id==1 and all_records.right_id!=2:
             all_records.right_id=2
+
+        names=" %s  %s" %(all_records.f_name, all_records.s_name)
     
             
         if password_form == all_records.password:
             
             session['username'] = request.form['username']
+            session['names']= names
             session['rights'] = all_records.right_id
             session['logged_in'] = True
             return redirect(url_for('index'))
@@ -57,6 +60,8 @@ def index():
         assets = sess.query(Add_asset).count()
         staff = sess.query(Add_staff).count()
         transactions = sess.query(Issue_asset).count()
+        transactions = sess.query(Issue_asset).filter_by(status='Request').count()
+        
         user=session['rights']
         return render_template('index.html', title='Home',user=user , assets=assets, staff=staff,transactions=transactions)
     else:
@@ -139,7 +144,7 @@ def reclaim_asset(transaction_id):
 
 
 
-
+'''---------------------------------   issue assets -------------------------'''
 @app.route('/issue_asset', methods=['GET', 'POST'])
 def issue_asset():
     error = None
@@ -184,6 +189,7 @@ def issue_asset():
 def add_staff():
     error = None
     all_rights =sess.query(UserRights).all()
+    all_depts =sess.query(Department).all()
     user=session['rights']
     if request.method == 'POST':
         
@@ -194,18 +200,21 @@ def add_staff():
             username  = request.form['username']
             level  = request.form['level']
             email  = request.form['email']
+            department  = request.form['department']
+            password='-'
             
-            new_staff = Add_staff(f_name, s_name,username,level,email)
+            
+            new_staff = Add_staff(f_name, s_name,username,level,email,department,password)
             sess.add(new_staff)
             sess.commit()
              
             
-            return render_template('add_staff.html',all_rights=all_rights,user=user)
+            return render_template('add_staff.html',all_rights=all_rights,user=user, all_depts=all_depts)
         else:
-            return render_template('add_staff.html', all_rights=all_rights,error=error,user=user)
+            return render_template('add_staff.html', all_rights=all_rights,error=error,user=user,all_depts=all_depts)
     else:
         error = "Form Post not Received"
-    return render_template('add_staff.html', error=error, all_rights=all_rights,user=user)
+    return render_template('add_staff.html', error=error, all_rights=all_rights,user=user,all_depts=all_depts)
 
 
 ''' --------------------------      view staff ------------------------------------------------ '''
@@ -252,4 +261,61 @@ def issued():
     all_assets = sess.query(Add_asset).all()# get asset name
     
     return render_template('issued.html', today = today, user=user, all_records=all_records, all_staff=all_staff,all_assets=all_assets)
+
+
+"""----------------------------------- request transactions-------------------------------------- """
+@app.route('/request_transactions', methods=['GET', 'POST'])
+def request_transactions():
+    all_records = sess.query(Issue_asset).filter_by(status='Request')
+    user=session['rights']
+    today = date.today()
+    all_staff = sess.query(Add_staff).all()# get staff names
+    all_assets = sess.query(Add_asset).all()# get asset name
+    
+    return render_template('request_transactions.html', today = today, user=user, all_records=all_records, all_staff=all_staff,all_assets=all_assets)
+
+
+
+
+
+'''-------------------------------------request asset-----------------------------------------------'''
+@app.route('/request_asset', methods=['GET', 'POST'])
+def request_asset():
+    error = None
+    all_staff = sess.query(Add_staff).all()# get staff list
+    all_assets = sess.query(Add_asset).all()# get assets lits
+    user=session['rights']
+   
+
+    form = ExampleForm()
+    if form.validate_on_submit():
+        return form.dt.data.strftime('%Y-%m-%d')#init date format
+
+    if request.method == 'POST':
+        
+        if request.form['add']:
+            
+            staff_id  = session['names']
+            asset_id  = request.form['asset_id']
+            admin_id  = session['username']
+            date_borrowed  = request.form['dt']
+            date_return  = request.form['da']
+            status  = "Request"
+            comment  = request.form['comment']
+            
+            return asset_id
+            
+            new_transaction = Issue_asset(staff_id, asset_id,admin_id,date_borrowed,date_return,status,comment)
+            sess.add(new_transaction)
+            sess.commit()
+             
+            flash('successfully submitted')
+            return render_template('request_asset.html',form=form,all_staff=all_staff,all_assets=all_assets,user=user )
+        else:
+            return render_template('request_asset.html', error=error,user=user,form=form ,all_staff=all_staff,all_assets=all_assets)
+    else:
+        error = "Form Post not Received"
+    return render_template('request_asset.html',form=form ,all_staff=all_staff,all_assets=all_assets,user=user)
+
+
     

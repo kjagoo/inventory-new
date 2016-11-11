@@ -154,6 +154,7 @@
 		<td>{{assets.serial}}</td>
 		<td>{{assets.andela_serial}}</td>
 		<td>{{assets.date_bought}}</td>
+		<td> {% if assets.avail==0 %} Available {% else%} Issued out {% endif%}</td>
 		
 			{% if user<=2 %}
 				<td>{% if assets.status == 'Issued Out' %}

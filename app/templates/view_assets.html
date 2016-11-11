@@ -136,6 +136,7 @@
                                     <th>Serial</th>
 									<th>Andela Serial</th>
 									<th>Date Bought</th>
+									<th>status</th>
 									
 									
                                 </tr>
@@ -150,6 +151,8 @@
 		<td>{{assets.serial}}</td>
 		<td>{{assets.andela_serial}}</td>
 		<td>{{assets.date_bought}}</td>
+		<td> {% if assets.avail==0 %} Available {% else%} Issued out {% endif%}</td>
+		
 		
     
     </tr>

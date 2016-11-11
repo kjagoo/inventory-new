@@ -121,7 +121,7 @@
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
-                     <h2>Issue Assets</h2>   
+                     <h2>Request Assets</h2>   
                    </div>
                 </div>
 				 {% with messages = get_flashed_messages() %}
@@ -138,12 +138,16 @@
                 <div class="row">
                     <div class="col-md-6 col-sm-3 col-xs-6">
 					<form action="{{ url_for('request_asset') }}" method="POST" class="form-group">
-					
-					
+					Staff Name
+					<select name="staff_id" class="form-control">
+					  {% for people in all_staff %}
+					  <option value="{{people.staff_id}}">{{people.f_name}} {{people.s_name}}</option>
+					  {% endfor%}
+					</select>
 					Item id:
 					<select name="asset_id" class="form-control">
 					  {% for assets in all_assets %}
-					  <option value="{{assets.asset_id}}">{{assets.name}} {{assets.andela_serial}}</option>
+					  <option value="{{assets.assest_id}}">{{assets.name}} {{assets.andela_serial}}</option>
 					  {% endfor%}
 					</select>
 					

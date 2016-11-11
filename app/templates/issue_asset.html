@@ -142,13 +142,13 @@
 					Borrowers Name:
 					<select name="staff_id" class="form-control">
 					  {% for people in all_staff %}
-					  <option value="{{people.staff_id}}">{{people.staff_id}} {{people.f_name}} {{people.s_name}}</option>
+					  <option value="{{people.staff_id}}">{{people.f_name}} {{people.s_name}}</option>
 					  {% endfor%}
 					</select>
 					Item id:
 					<select name="asset_id" class="form-control">
 					  {% for assets in all_assets %}
-					  <option value="{{assets.asset_id}}">{{assets.name}} {{assets.andela_serial}}</option>
+					  <option value="{{assets.assest_id}}">{{assets.name}} {{assets.andela_serial}}</option>
 					  {% endfor%}
 					</select>
 					

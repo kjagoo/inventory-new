@@ -87,7 +87,8 @@ def add_asset():
             serial_form  = request.form['serial']
             a_serial_form  = request.form['a_serial']
             date_bought_form  = request.form['da']
-            new_record = Add_asset(name_form, serial_form, a_serial_form, date_bought_form, description_form)
+            avail="0"
+            new_record = Add_asset(name_form, serial_form, a_serial_form, date_bought_form, description_form,avail)
             sess.add(new_record)
             sess.commit()
              
@@ -119,7 +120,7 @@ def view_assets():
 def available_assets():
     user=session['rights']
 
-    all_records = sess.query(Add_asset).all()
+    all_records = sess.query(Add_asset).filter_by(avail='0')
     
     all_trans = sess.query(Issue_asset).filter_by(status='Issued out')
     return render_template('available_assets.html', all_records=all_records, all_trans=all_trans,user=user)
@@ -149,7 +150,7 @@ def reclaim_asset(transaction_id):
 def issue_asset():
     error = None
     all_staff = sess.query(Add_staff).all()# get staff list
-    all_assets = sess.query(Add_asset).all()# get assets lits
+    all_assets = sess.query(Add_asset).filter_by(avail=0)# get assets lits
     user=session['rights']
    
 
@@ -159,26 +160,32 @@ def issue_asset():
 
     if request.method == 'POST':
         
-        if request.form['add']:
+        #if request.form['add']:
             
-            staff_id  = request.form['staff_id']
-            asset_id  = request.form['asset_id']
-            admin_id  = session['username']
-            date_borrowed  = request.form['dt']
-            date_return  = request.form['da']
-            status  = "Issued Out"
-            comment  = request.form['comment']
-            
-            
-            
-            new_transaction = Issue_asset(staff_id, asset_id,admin_id,date_borrowed,date_return,status,comment)
-            sess.add(new_transaction)
-            sess.commit()
-             
-            flash('successfully submitted')
-            return render_template('issue_asset.html',form=form,all_staff=all_staff,all_assets=all_assets,user=user )
-        else:
-            return render_template('issue_asset.html', error=error,user=user,form=form ,all_staff=all_staff,all_assets=all_assets)
+        staff_id  = request.form['staff_id']
+        asset_id  = request.form['asset_id']
+        admin_id  = session['username']
+        date_borrowed  = request.form['dt']
+        date_return  = request.form['da']
+        status  = "Issued Out"
+        comment  = request.form['comment']
+        
+        
+        
+        
+        new_transaction = Issue_asset(staff_id, asset_id,admin_id,date_borrowed,date_return,status,comment)
+        sess.add(new_transaction)
+        sess.commit()
+
+        avail_asset = sess.query(Add_asset).filter_by(assest_id=asset_id).first()
+        avail_asset.avail="1"
+        sess.add(avail_asset)
+        sess.commit()
+        
+        flash('successfully submitted')
+        return render_template('issue_asset.html',form=form,all_staff=all_staff,all_assets=all_assets,user=user )
+        #else:
+        #    return render_template('issue_asset.html', error=error,user=user,form=form ,all_staff=all_staff,all_assets=all_assets)
     else:
         error = "Form Post not Received"
     return render_template('issue_asset.html',form=form ,all_staff=all_staff,all_assets=all_assets,user=user)
@@ -283,7 +290,7 @@ def request_transactions():
 def request_asset():
     error = None
     all_staff = sess.query(Add_staff).all()# get staff list
-    all_assets = sess.query(Add_asset).all()# get assets lits
+    all_assets = sess.query(Add_asset).filter_by(avail=0)# get assets lits
     user=session['rights']
    
 
@@ -295,7 +302,7 @@ def request_asset():
         
         if request.form['add']:
             
-            staff_id  = session['names']
+            staff_id  = request.form['staff_id']
             asset_id  = request.form['asset_id']
             admin_id  = session['username']
             date_borrowed  = request.form['dt']
@@ -303,7 +310,8 @@ def request_asset():
             status  = "Request"
             comment  = request.form['comment']
             
-            return asset_id
+            
+            
             
             new_transaction = Issue_asset(staff_id, asset_id,admin_id,date_borrowed,date_return,status,comment)
             sess.add(new_transaction)

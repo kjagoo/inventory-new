@@ -40,18 +40,20 @@ class Add_asset(Base):
         andela_serial = Column(String(100))
         date_bought = Column(String(100))
         description = Column(String(100))
+        avail = Column(String(100))
         
 
-        def __init__(self, name, serial,andela_serial,date_bought,description):
+        def __init__(self, name, serial,andela_serial,date_bought,description,avail):
                 self.name = name
                 self.serial = serial
                 self.andela_serial = andela_serial
                 self.date_bought = date_bought
                 self.description = description
+                self.avail = avail
                 
 
         def __repr__(self):
-                return "<MyTable(%s,%s,%s,%s,%s)>" % (self.name, self.serial, self.andela_serial, self.date_bought, self.description)
+                return "<MyTable(%s,%s,%s,%s,%s)>" % (self.name, self.serial, self.andela_serial, self.date_bought, self.description, self.avail )
 
 
  
